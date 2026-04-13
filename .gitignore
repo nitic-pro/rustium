@@ -38,3 +38,20 @@ hs_err_*.log
 replay_*.log
 *.hprof
 *.jfr
+
+# rust / native
+target/
+*.rs.bk
+*.dll
+*.so
+*.dylib
+!src/main/resources/assets/modid/natives/*.dll
+!src/main/resources/assets/modid/natives/*.so
+!src/main/resources/assets/modid/natives/*.dylib
+
+# Custom Rustium Build Output
+build_log.txt
+jdk-25*/
+*.tar.gz
+lithium*.jar
+temp.class

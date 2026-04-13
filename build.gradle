@@ -47,16 +47,30 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 25
+        it.options.compilerArgs.addAll(['--add-modules', 'jdk.incubator.vector', '--enable-preview'])
 }
 
+loom {
+    runs {
+        server {
+            vmArgs(
+                "--add-modules", "jdk.incubator.vector",
+                "--enable-native-access=ALL-UNNAMED", "--enable-preview"
+            )
+        }
+        client {
+            vmArgs(
+                "--add-modules", "jdk.incubator.vector",
+                "--enable-native-access=ALL-UNNAMED", "--enable-preview"
+            )
+        }
+    }
+}
 java {
-	// Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-	// if it is present.
-	// If you remove this line, sources will not be generated.
-	withSourcesJar()
-
-	sourceCompatibility = JavaVersion.VERSION_25
-	targetCompatibility = JavaVersion.VERSION_25
+        toolchain {
+            languageVersion = JavaLanguageVersion.of(25)
+        }
+        withSourcesJar()
 }
 
 jar {

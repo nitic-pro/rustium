@@ -1,0 +1,69 @@
+name: Rustium Roman CI Build
+
+on:
+  push:
+    branches: [ "main", "dev" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  build_all:
+    name: Build Multi-Architecture (Java + Rust Native Engine)
+    runs-on: ubuntu-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+
+      # 1. Java 25 (Project Panama & Vector API)
+      - name: Set up JDK 25
+        uses: actions/setup-java@v4
+        with:
+          java-version: '25'
+          distribution: 'zulu'
+
+      # 2. Rust (stable x86_64, aarch64_linux)
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@master
+        with:
+          toolchain: stable
+          targets: x86_64-unknown-linux-gnu, aarch64-unknown-linux-gnu
+
+      - name: Install cross-compilation tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y gcc-aarch64-linux-gnu g++-aarch64-linux-gnu libc6-dev-arm64-cross
+
+      # 3. Build Rust Native Engine (Intel / x86_64) - DigitalOcean 用
+      - name: Build Rust (x86_64)
+        working-directory: ./rust_native
+        run: cargo build --release --target x86_64-unknown-linux-gnu
+
+      # 4. Build Rust Native Engine (ARM / aarch64) - Oracle Cloud (OCI) 用
+      - name: Build Rust (aarch64)
+        working-directory: ./rust_native
+        run: |
+          export CARGO_TARGET_AARCH64_UNKNOWN_LINUX_GNU_LINKER=aarch64-linux-gnu-gcc
+          cargo build --release --target aarch64-unknown-linux-gnu
+
+      # 5. Move .so files to resources folder for Gradle build
+      - name: Copy native libs to resources
+        run: |
+          mkdir -p src/main/resources/native_libs
+          cp rust_native/target/x86_64-unknown-linux-gnu/release/librust_engine.so src/main/resources/native_libs/librust_engine_x86_64.so
+          cp rust_native/target/aarch64-unknown-linux-gnu/release/librust_engine.so src/main/resources/native_libs/librust_engine_aarch64.so
+
+      # 6. Build Gradle (Fabric Mod)
+      - name: Validate Gradle wrapper
+        uses: gradle/actions/wrapper-validation@v3
+        
+      - name: Build with Gradle
+        uses: gradle/actions/setup-gradle@v3
+        with:
+          arguments: build --no-daemon
+
+      # 7. Upload Artifact (OCI, DigitalOcean に展開するデプロイ用JAR)
+      - name: Upload Rustium Roman JAR
+        uses: actions/upload-artifact@v4
+        with:
+          name: RustiumRoman-Universal-Server-Jar
+          path: build/libs/*-all.jar
