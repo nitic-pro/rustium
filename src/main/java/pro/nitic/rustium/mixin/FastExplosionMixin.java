@@ -22,11 +22,17 @@ public abstract class FastExplosionMixin {
     private static void getSeenPercent(Vec3 explosionCenter, Entity entity, CallbackInfoReturnable<Float> cir) {
         net.minecraft.world.phys.AABB aabb = entity.getBoundingBox();
         
-        // 判定する3点（足元、中心、頭）
+        // 判定する9点（中心 ＋ 当たり判定の8つの頂点）
         Vec3[] points = new Vec3[]{
-            new Vec3((aabb.minX + aabb.maxX) / 2.0, aabb.minY, (aabb.minZ + aabb.maxZ) / 2.0),
             aabb.getCenter(),
-            new Vec3((aabb.minX + aabb.maxX) / 2.0, aabb.maxY, (aabb.minZ + aabb.maxZ) / 2.0)
+            new Vec3(aabb.minX, aabb.minY, aabb.minZ),
+            new Vec3(aabb.maxX, aabb.minY, aabb.minZ),
+            new Vec3(aabb.minX, aabb.minY, aabb.maxZ),
+            new Vec3(aabb.maxX, aabb.minY, aabb.maxZ),
+            new Vec3(aabb.minX, aabb.maxY, aabb.minZ),
+            new Vec3(aabb.maxX, aabb.maxY, aabb.minZ),
+            new Vec3(aabb.minX, aabb.maxY, aabb.maxZ),
+            new Vec3(aabb.maxX, aabb.maxY, aabb.maxZ)
         };
         
         int visibleCount = 0;
@@ -44,7 +50,7 @@ public abstract class FastExplosionMixin {
             }
         }
         
-        // 3本中何本通ったかで 0.0, 0.33, 0.66, 1.0 の露出度を返す
-        cir.setReturnValue(visibleCount / 3.0F);
+        // 9本中何本通ったかで露出度（0.0 ~ 1.0）を返す
+        cir.setReturnValue(visibleCount / 9.0F);
     }
 }
