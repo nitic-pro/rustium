@@ -43,7 +43,7 @@ Minecraft 26.1.2 向けの極限最適化（ロマン追求型）Fabric MODで�
 ご自身でソースコードからビルドする場合：
 ```bash
 # リポジトリのクローン
-git clone https://github.com/YourName/rustium.git
+git clone https://github.com/nitic-pro/rustium.git
 cd rustium
 
 # Fabricビルドの実行

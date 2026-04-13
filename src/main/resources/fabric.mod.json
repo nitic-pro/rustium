@@ -1,31 +1,31 @@
 {
 	"schemaVersion": 1,
-	"id": "modid",
+	"id": "rustium",
 	"version": "${version}",
-	"name": "Example Mod",
-	"description": "This is an example description! Tell everyone what your mod is about!",
+	"name": "Rustium",
+	"description": "Extreme optimization mod using Rust offloading and approximate algorithms.",
 	"authors": [
-		"Me!"
+		"fukayatti0"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"homepage": "https://github.com/nitic-pro/rustium",
+		"sources": "https://github.com/nitic-pro/rustium"
 	},
 	"license": "CC0-1.0",
-	"icon": "assets/modid/icon.png",
+	"icon": "assets/rustium/icon.png",
 	"environment": "*",
 	"entrypoints": {
 		"main": [
-			"com.example.RustiumMod"
+			"pro.nitic.rustium.RustiumMod"
 		],
 		"client": [
-			"com.example.client.RustiumModClient"
+			"pro.nitic.rustium.client.RustiumClient"
 		]
 	},
 	"mixins": [
-		"modid.mixins.json",
+		"rustium.mixins.json",
 		{
-			"config": "modid.client.mixins.json",
+			"config": "rustium.client.mixins.json",
 			"environment": "client"
 		}
 	],

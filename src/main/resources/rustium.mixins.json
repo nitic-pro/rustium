@@ -1,0 +1,15 @@
+{
+	"required": true,
+	"package": "pro.nitic.rustium.mixin",
+	"compatibilityLevel": "JAVA_25",
+	"mixins": [
+		"RustiumMixin", "MobEntityMixin", "LightEngineMixin", "PackedChunkMixin", "OptimalThreadPoolMixin", "ImprovedNoiseMixin", "FastExplosionMixin",
+    "DataLayerSIMDMixin", "NodePathfindingMixin", "TickCullingMixin", "MathHelperMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
